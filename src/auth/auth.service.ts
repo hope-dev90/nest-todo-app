@@ -70,4 +70,10 @@ export class AuthService {
   async findAll(){
     return this.usersService.findAll();
   }
+  async forgotPassword(email: string){
+    return this.usersService.forgotPassword(email);
+  }
+  async resetPassword(email: string, otp: string, newPassword: string){
+    return this.usersService.resetPassword(email, otp, newPassword);
+  }
 }

@@ -48,5 +48,12 @@ async verifyEmail(@Query('token') token: string, @Res() res: Response) {
     return res.redirect('/verify-error.html');
   }
 }
-
+@Post('forgot-password')
+  forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+@Post('reset-password')
+  resetPassword(@Body('email') email: string, @Body('otp') otp: string, @Body('newPassword') newPassword: string) {
+    return this.authService.resetPassword(email, otp, newPassword);
+  }
 }

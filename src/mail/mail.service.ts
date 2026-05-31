@@ -24,4 +24,14 @@ export class MailService {
       html: `<h1>Verify your email</h1><p>Click the link below to verify your email. It expires in 24 hours.</p><a href="http://localhost:3000/auth/verify-email?token=${token}">Verify Email</a>`,
     });
   }
+
+  async sendPasswordResetOtp(to: string, otp: string) {
+    console.log(`Sending password reset OTP to ${to}`);
+    await this.mailerService.sendMail({
+      to: to,
+      subject: 'Password Reset OTP',
+      text: `Your OTP is ${otp}`,
+      html: `<h1>Password Reset</h1><p>Your OTP is: <strong>${otp}</strong></p>`,
+    });
+  }
 }

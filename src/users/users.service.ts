@@ -2,12 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
+import { MailService } from 'src/mail/mail.service';
+import * as bcrypt from 'bcryptjs';
+
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private mailService: MailService,
   ) {}
 
   async findByEmail(email: string): Promise<User | null> {
@@ -41,5 +45,46 @@ async markAsVerified(user: User): Promise<User> {
   user.isVerified = true;
   user.verificationToken = null; 
   return this.usersRepository.save(user);
+}
+async forgotPassword(email: string): Promise<boolean> {
+  if (!email) return false;
+
+  const user = await this.usersRepository.findOne({ where: { email } });
+
+  if (!user) return false;
+
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  user.resetOtp = otp;
+  user.resetOtpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+
+  await this.usersRepository.save(user);
+
+
+  await this.mailService.sendPasswordResetOtp(email, otp);
+
+  return true;
+}
+async resetPassword(email: string, otp: string, newPassword: string): Promise<boolean> {
+  const user = await this.usersRepository.findOne({ where: { email } });
+
+  if (!user) return false;
+
+  if (
+    user.resetOtp !== otp ||
+    !user.resetOtpExpiry ||
+    user.resetOtpExpiry < new Date()
+  ) {
+    return false;
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  user.resetOtp = null;
+  user.resetOtpExpiry = null;
+
+  await this.usersRepository.save(user);
+
+  return true;
 }
 }
