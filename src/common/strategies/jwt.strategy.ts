@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UsersService } from '../users/users.service';
+import { Role } from '../../users/user.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -11,9 +12,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: 'access-secret', 
     });
   }
-
   async validate(payload: { sub: number; email: string }) {
-    const user = await this.usersService.findByEmail(payload.email);
-    return user; 
-  }
+  console.log('JWT payload:', payload); 
+  const user = await this.usersService.findByEmail(payload.email);
+  console.log('user found:', user);    
+  return user;
+}
 }
