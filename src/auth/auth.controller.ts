@@ -1,5 +1,8 @@
-import { Controller, Post,Delete,Query,Get, Body } from '@nestjs/common';
+import { Controller, Post,Delete,Query,Get, Body,UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard'
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 export class RegisterDto {
   email: string;
@@ -22,10 +25,14 @@ export class AuthController {
     return this.authService.login(body.email, body.password);
   }
 @Delete('delete')
+  @UseGuards(JwtAuthGuard, RolesGuard) // 1st verify JWT, 2nd check role
+  @Roles(Role.ADMIN)                   
 delete(@Body('email') email: string) {
   return this.authService.delete(email);
 }
 @Get('users')
+  @UseGuards(JwtAuthGuard, RolesGuard) // 1st verify JWT, 2nd check role
+  @Roles(Role.ADMIN)
 findAll(){
     return this.authService.findAll();
 }
