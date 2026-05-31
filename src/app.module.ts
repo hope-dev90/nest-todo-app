@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { join } from 'path';
 import {TypeOrmModule} from '@nestjs/typeorm'
 import { AppController } from './app.controller';
@@ -12,6 +14,10 @@ import { MailModule } from './mail/mail.module';
 
 imports: [
   ConfigModule.forRoot({ isGlobal: true }),
+  ThrottlerModule.forRoot([{
+    ttl: 60000, // 1 minute
+    limit: 10, // 10 requests per IP per ttl
+  }]),
   ServeStaticModule.forRoot({
     rootPath: join(__dirname, '..', 'public'),
   }),
@@ -28,6 +34,12 @@ imports: [
   AuthModule, UsersModule, MailModule],
 
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
