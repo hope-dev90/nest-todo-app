@@ -16,4 +16,5 @@ async findByEmail(email: string): Promise<User | null>{
     const user = this.usersRepository.create({ email, password });
     return this.usersRepository.save(user);
   }
+  async generateTokens
 }
