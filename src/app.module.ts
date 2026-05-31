@@ -11,20 +11,30 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
 import { NotesModule } from './notes/notes.module';
+import { RemindersModule } from './reminders/reminders.module';
+import { AgendaModule } from './agenda/agenda.module';
 @Module({
 
 imports: [
    NotesModule,
+  RemindersModule,
+  AgendaModule,
   ConfigModule.forRoot({ isGlobal: true }),
   ThrottlerModule.forRoot([{
     ttl: 60000, 
     limit: 1000, 
   }]),
-  ServeStaticModule.forRoot({
-    rootPath: join(__dirname, '..', 'client', 'build'),
-    serveRoot: '/',
-    renderPath: /^(?!\/api).*/,
-  }),
+  ServeStaticModule.forRoot(
+    {
+      rootPath: join(__dirname, '..', 'client', 'build'),
+      serveRoot: '/',
+      exclude: ['/auth', '/notes', '/uploads'],
+    },
+    {
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }
+  ),
   TypeOrmModule.forRootAsync({
     useFactory: (configService: ConfigService) => ({
       type: 'postgres',
@@ -38,7 +48,7 @@ imports: [
     }),
     inject: [ConfigService],
   }),
-  AuthModule, UsersModule, MailModule, NotesModule],
+  AuthModule, UsersModule, MailModule, NotesModule, RemindersModule, AgendaModule],
 
   controllers: [AppController],
   providers: [

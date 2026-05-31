@@ -9,6 +9,8 @@ export default function NoteModal({ note, onSave, onClose, loading }) {
     color: COLORS[0],
     isPinned: false,
   });
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     if (note) {
@@ -18,13 +20,24 @@ export default function NoteModal({ note, onSave, onClose, loading }) {
         color:    note.color    || COLORS[0],
         isPinned: note.isPinned || false,
       });
+      if (note.imageUrl) setImagePreview(note.imageUrl);
     }
   }, [note]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
     if (!form.title.trim() || !form.content.trim()) return;
-    onSave(form);
+    onSave(form, selectedFile);
   };
 
   return (

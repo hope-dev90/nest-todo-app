@@ -28,6 +28,9 @@ export class Todo {
   @Column({ nullable: true })
   color: string;
 
+  @Column({ nullable: true })
+  imageUrl: string; // New column for image path/url!
+
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;

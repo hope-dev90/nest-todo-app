@@ -73,8 +73,28 @@ export const authApi = {
 export const notesApi = {
   getAll: (search) => api.get('/notes', { params: { search } }),
   getById: (id) => api.get(`/notes/${id}`),
-  create: (note) => api.post('/notes', note),
-  update: (id, note) => api.patch(`/notes/${id}`, note),
+  create: (note, file) => {
+    const formData = new FormData();
+    formData.append('title', note.title);
+    formData.append('content', note.content);
+    if (note.color) formData.append('color', note.color);
+    if (note.isPinned !== undefined) formData.append('isPinned', note.isPinned);
+    if (file) formData.append('image', file);
+    return api.post('/notes', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  update: (id, note, file) => {
+    const formData = new FormData();
+    if (note.title) formData.append('title', note.title);
+    if (note.content) formData.append('content', note.content);
+    if (note.color) formData.append('color', note.color);
+    if (note.isPinned !== undefined) formData.append('isPinned', note.isPinned);
+    if (file) formData.append('image', file);
+    return api.patch(`/notes/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
   delete: (id) => api.delete(`/notes/${id}`),
 };
 
