@@ -14,10 +14,11 @@ import { NotesModule } from './notes/notes.module';
 @Module({
 
 imports: [
+   NotesModule,
   ConfigModule.forRoot({ isGlobal: true }),
   ThrottlerModule.forRoot([{
-    ttl: 60000, // 1 minute
-    limit: 10, // 10 requests per IP per ttl
+    ttl: 60000, 
+    limit: 10, 
   }]),
   ServeStaticModule.forRoot({
     rootPath: join(__dirname, '..', 'public'),
@@ -42,5 +43,6 @@ imports: [
       useClass: ThrottlerGuard,
     },
   ],
+  
 })
 export class AppModule {}

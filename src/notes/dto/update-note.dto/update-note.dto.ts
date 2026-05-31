@@ -1,1 +1,4 @@
-export class UpdateNoteDto {}
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateNoteDto } from '../create-note.dto/create-note.dto';
+
+export class UpdateNoteDto extends PartialType(CreateNoteDto) {}
