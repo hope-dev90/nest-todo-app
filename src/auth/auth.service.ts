@@ -3,12 +3,13 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
-
+import { MailService } from 'src/mail/mail.service';
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private mailService: MailService,
     private configService: ConfigService,
   ) {}
 
@@ -16,7 +17,7 @@ export class AuthService {
   
     const existing = await this.usersService.findByEmail(email);
     if (existing) throw new ConflictException('Email already in use');
-
+ await this.mailService.sendWelcome(email);
     const user = await this.usersService.create(email, password);
 
     const tokens = await this.generateTokens(user.id, user.email);

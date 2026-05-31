@@ -18,7 +18,11 @@ export class User {
 
   @Column({ type: 'enum', enum: Role, default: Role.USER }) // 👈 add this
   role: Role;
+@Column({ default: false })
+isVerified: boolean;
 
+@Column({ nullable: true })
+verificationToken: string;
   @BeforeInsert()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);

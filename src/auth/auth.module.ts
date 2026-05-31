@@ -6,10 +6,12 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from '../common/strategies/jwt.strategy';
 import { RolesGuard } from '../common/guards/roles.guard';
-import { Reflector } from '@nestjs/core'; 
+import { Reflector } from '@nestjs/core';
+import { MailModule } from 'src/mail/mail.module'; 
 @Module({
   imports: [
     UsersModule,
+    MailModule, 
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('JWT_ACCESS_SECRET'),

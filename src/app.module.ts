@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { MailModule } from './mail/mail.module';
 @Module({
 
 imports: [
@@ -19,7 +20,7 @@ imports: [
       autoLoadEntities: true,
       synchronize: true, 
   }),
-  AuthModule, UsersModule],
+  AuthModule, UsersModule, MailModule],
 
   controllers: [AppController],
   providers: [AppService],
