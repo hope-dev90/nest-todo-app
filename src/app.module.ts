@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -18,20 +18,25 @@ imports: [
   ConfigModule.forRoot({ isGlobal: true }),
   ThrottlerModule.forRoot([{
     ttl: 60000, 
-    limit: 10, 
+    limit: 1000, 
   }]),
   ServeStaticModule.forRoot({
-    rootPath: join(__dirname, '..', 'public'),
+    rootPath: join(__dirname, '..', 'client', 'build'),
+    serveRoot: '/',
+    renderPath: /^(?!\/api).*/,
   }),
-  TypeOrmModule.forRoot({
- type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'h1o2p3e4@2010',
-      database: 'todo_db',
+  TypeOrmModule.forRootAsync({
+    useFactory: (configService: ConfigService) => ({
+      type: 'postgres',
+      host: configService.get('DB_HOST'),
+      port: configService.get('DB_PORT'),
+      username: configService.get('DB_USER'),
+      password: configService.get('DB_PASSWORD'),
+      database: configService.get('DB_NAME'),
       autoLoadEntities: true,
       synchronize: true, 
+    }),
+    inject: [ConfigService],
   }),
   AuthModule, UsersModule, MailModule, NotesModule],
 

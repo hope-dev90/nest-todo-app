@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
-import { Note } from '../users/note.entity';
+import { Todo } from '../users/note.entity';
 
 @Controller('notes')
 @UseGuards(JwtAuthGuard)
@@ -13,17 +13,18 @@ export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
   @Post()
-  create(@Body() createNoteDto: CreateNoteDto, @CurrentUser() user: User): Promise<Note> {
+  create(@Body() createNoteDto: CreateNoteDto, @CurrentUser() user: User): Promise<Todo> {
     return this.notesService.create(createNoteDto, user);
   }
 
   @Get()
-  findAll(@CurrentUser() user: User): Promise<Note[]> {
-    return this.notesService.findAll(user);
+  findAll(@CurrentUser() user: User, @Query('search') search?: string): Promise<Todo[]> {
+    console.log('NotesController.findAll called with user id:', user.id, 'search:', search);
+    return this.notesService.findAll(user, search);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @CurrentUser() user: User): Promise<Note> {
+  findOne(@Param('id') id: string, @CurrentUser() user: User): Promise<Todo> {
     return this.notesService.findOne(+id, user);
   }
 
@@ -32,7 +33,7 @@ export class NotesController {
     @Param('id') id: string, 
     @Body() updateNoteDto: UpdateNoteDto, 
     @CurrentUser() user: User
-  ): Promise<Note> {
+  ): Promise<Todo> {
     return this.notesService.update(+id, updateNoteDto, user);
   }
 

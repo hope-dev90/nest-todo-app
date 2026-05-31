@@ -16,10 +16,13 @@ async function bootstrap() {
   
 
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: true,
     credentials: true,
   });
-  
+
+  // API routes under /api so GET /notes (SPA page) doesn't collide with GET /api/notes
+  app.setGlobalPrefix('api');
+
   await app.listen(3000);
 }
 bootstrap();

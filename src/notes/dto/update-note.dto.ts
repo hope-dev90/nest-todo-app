@@ -1,4 +1,4 @@
-import { IsString, IsOptional, MinLength } from 'class-validator';
+import { IsString, IsOptional, MinLength, IsBoolean } from 'class-validator';
 
 export class UpdateNoteDto {
   @IsString()
@@ -8,5 +8,17 @@ export class UpdateNoteDto {
 
   @IsString()
   @IsOptional()
-  content?: string;
+  content?: string; // Optional, for backward compatibility with frontend
+
+  @IsString()
+  @IsOptional()
+  description?: string; // Optional, for direct use with DB column
+
+  @IsString()
+  @IsOptional()
+  color?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isPinned?: boolean;
 }

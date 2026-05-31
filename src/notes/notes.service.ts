@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Note } from '../users/note.entity';
+import { Repository, ILike } from 'typeorm';
+import { Todo } from '../users/note.entity';
 import { User } from '../users/user.entity';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
@@ -9,45 +9,74 @@ import { UpdateNoteDto } from './dto/update-note.dto';
 @Injectable()
 export class NotesService {
   constructor(
-    @InjectRepository(Note)
-    private notesRepository: Repository<Note>,
+    @InjectRepository(Todo)
+    private todoRepository: Repository<Todo>,
   ) {}
 
-  async create(createNoteDto: CreateNoteDto, user: User): Promise<Note> {
-    const note = this.notesRepository.create({
-      ...createNoteDto,
+  async create(createNoteDto: CreateNoteDto, user: User): Promise<any> {
+    console.log('NotesService.create called with:', { user, createNoteDto });
+    const todo = this.todoRepository.create({
+      ...(createNoteDto as any),
+      description: createNoteDto.content || (createNoteDto as any).description,
       userId: user.id,
     });
-    return this.notesRepository.save(note);
+    const savedTodo = await this.todoRepository.save(todo) as unknown as Todo;
+    console.log('NotesService.create saved:', savedTodo);
+    return { ...savedTodo, content: savedTodo.description };
   }
 
-  async findAll(user: User): Promise<Note[]> {
-    return this.notesRepository.find({
-      where: { userId: user.id },
-      order: { createdAt: 'DESC' },
-    });
+  async findAll(user: User, search?: string): Promise<any[]> {
+    console.log('NotesService.findAll called with:', { user, search });
+    let todos: Todo[];
+    if (search) {
+      todos = await this.todoRepository.find({
+        where: [
+          { userId: user.id, title: ILike(`%${search}%`) },
+          { userId: user.id, description: ILike(`%${search}%`) },
+        ],
+        order: { isPinned: 'DESC', createdAt: 'DESC' },
+      });
+    } else {
+      todos = await this.todoRepository.find({
+        where: { userId: user.id },
+        order: { isPinned: 'DESC', createdAt: 'DESC' },
+      });
+    }
+    console.log('NotesService.findAll found:', todos.length, 'todos');
+    console.log('Todos:', todos);
+    // Explicitly set content for frontend compatibility
+    return todos.map(todo => ({
+      ...todo,
+      content: todo.description,
+    }));
   }
 
-  async findOne(id: number, user: User): Promise<Note> {
-    const note = await this.notesRepository.findOne({
+  async findOne(id: number, user: User): Promise<any> {
+    const todo = await this.todoRepository.findOne({
       where: { id, userId: user.id },
     });
 
-    if (!note) {
-      throw new NotFoundException('Note not found');
+    if (!todo) {
+      throw new NotFoundException('Todo not found');
     }
 
-    return note;
+    return { ...todo, content: todo.description };
   }
 
-  async update(id: number, updateNoteDto: UpdateNoteDto, user: User): Promise<Note> {
-    const note = await this.findOne(id, user);
-    Object.assign(note, updateNoteDto);
-    return this.notesRepository.save(note);
+  async update(id: number, updateNoteDto: UpdateNoteDto, user: User): Promise<any> {
+    const todo = await this.todoRepository.findOne({
+      where: { id, userId: user.id },
+    });
+    if (!todo) throw new NotFoundException('Todo not found');
+    const updateData = { ...(updateNoteDto as any) };
+    if (updateNoteDto.content) (updateData as any).description = updateNoteDto.content;
+    Object.assign(todo, updateData);
+    const saved = await this.todoRepository.save(todo);
+    return { ...saved, content: saved.description };
   }
 
   async remove(id: number, user: User): Promise<void> {
-    const note = await this.findOne(id, user);
-    await this.notesRepository.remove(note);
+    const todo = await this.findOne(id, user);
+    await this.todoRepository.remove(todo);
   }
 }

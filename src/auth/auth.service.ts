@@ -14,12 +14,12 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async register(email: string, password: string) {
+  async register(email: string, password: string, name?: string) {
     const existing = await this.usersService.findByEmail(email);
     if (existing) throw new ConflictException('Email already in use');
 
     const verificationToken = uuidv4();
-    const user = await this.usersService.create(email, password, verificationToken);
+    const user = await this.usersService.create(email, password, verificationToken, name);
 
     await this.mailService.sendVerificationEmail(email, verificationToken);
 
@@ -48,7 +48,7 @@ export class AuthService {
     if (!user.isVerified) throw new UnauthorizedException('Please verify your email first');
 
     const tokens = await this.generateTokens(user.id, user.email);
-    return { user: { id: user.id, email: user.email }, ...tokens };
+    return { user: { id: user.id, email: user.email, name: user.name }, ...tokens };
   }
 
   async generateTokens(userId: number, email: string) {

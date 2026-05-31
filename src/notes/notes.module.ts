@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NotesService } from './notes.service';
 import { NotesController } from './notes.controller';
-import { Note } from '../users/note.entity';
+import { NotesService } from './notes.service';
+import { Todo } from '../users/note.entity'; // Now using Todo instead of Note
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Note])],
+  imports: [TypeOrmModule.forFeature([Todo])],
   controllers: [NotesController],
   providers: [NotesService],
 })

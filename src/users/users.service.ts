@@ -19,8 +19,8 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
-  async create(email: string, password: string, verificationToken?: string): Promise<User> {
-    const user = this.usersRepository.create({ email, password, verificationToken });
+  async create(email: string, password: string, verificationToken?: string, name?: string): Promise<User> {
+    const user = this.usersRepository.create({ email, password, verificationToken, name });
     return this.usersRepository.save(user);
   }
   async findByVerificationToken(token: string): Promise<User | null> {
