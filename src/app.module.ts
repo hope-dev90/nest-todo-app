@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
+import { NotesModule } from './notes/notes.module';
 @Module({
 
 imports: [
@@ -31,7 +32,7 @@ imports: [
       autoLoadEntities: true,
       synchronize: true, 
   }),
-  AuthModule, UsersModule, MailModule],
+  AuthModule, UsersModule, MailModule, NotesModule],
 
   controllers: [AppController],
   providers: [

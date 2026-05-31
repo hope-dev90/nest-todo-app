@@ -5,16 +5,16 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Enable validation pipe for all requests
+
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Strip properties not in DTO
-      forbidNonWhitelisted: true, // Throw error if unknown properties
-      transform: true, // Transform payload to DTO instances
+      whitelist: true, 
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
   
-  // Enable CORS for frontend
+
   app.enableCors({
     origin: 'http://localhost:3000',
     credentials: true,
