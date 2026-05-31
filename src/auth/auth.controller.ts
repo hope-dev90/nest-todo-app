@@ -1,9 +1,10 @@
-import { Controller, Post,Delete,Query,Get, Body,UseGuards } from '@nestjs/common';
+import { Controller, Post,Delete,Query,Get, Body,UseGuards,Res, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard'
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../users/user.entity';
+import { Response } from 'express';
 
 export class RegisterDto {
   email: string;
@@ -36,6 +37,16 @@ delete(@Body('email') email: string) {
   @Roles(Role.ADMIN)
 findAll(){
     return this.authService.findAll();
+}
+
+@Get('verify-email')
+async verifyEmail(@Query('token') token: string, @Res() res: Response) {
+  try {
+    await this.authService.verifyEmail(token);
+    return res.redirect('/verify-email.html');
+  } catch (error) {
+    return res.redirect('/verify-error.html');
+  }
 }
 
 }

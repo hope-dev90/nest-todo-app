@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import {TypeOrmModule} from '@nestjs/typeorm'
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,6 +12,9 @@ import { MailModule } from './mail/mail.module';
 
 imports: [
   ConfigModule.forRoot({ isGlobal: true }),
+  ServeStaticModule.forRoot({
+    rootPath: join(__dirname, '..', 'public'),
+  }),
   TypeOrmModule.forRoot({
  type: 'postgres',
       host: 'localhost',

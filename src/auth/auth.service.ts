@@ -1,8 +1,9 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 import { MailService } from 'src/mail/mail.service';
 @Injectable()
 export class AuthService {
@@ -14,14 +15,23 @@ export class AuthService {
   ) {}
 
   async register(email: string, password: string) {
-  
     const existing = await this.usersService.findByEmail(email);
     if (existing) throw new ConflictException('Email already in use');
- await this.mailService.sendWelcome(email);
-    const user = await this.usersService.create(email, password);
 
-    const tokens = await this.generateTokens(user.id, user.email);
-    return { user: { id: user.id, email: user.email }, ...tokens };
+    const verificationToken = uuidv4();
+    const user = await this.usersService.create(email, password, verificationToken);
+
+    await this.mailService.sendVerificationEmail(email, verificationToken);
+
+    return { message: 'Registration successful. Please verify your email.' };
+  }
+
+  async verifyEmail(token: string) {
+    const user = await this.usersService.findByVerificationToken(token);
+    if (!user) throw new BadRequestException('Invalid or expired token');
+
+    await this.usersService.markAsVerified(user);
+    return { message: 'Email verified successfully!' };
   }
 
   async login(email: string, password: string) {
@@ -30,6 +40,8 @@ export class AuthService {
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) throw new UnauthorizedException('Invalid credentials');
+
+    if (!user.isVerified) throw new UnauthorizedException('Please verify your email first');
 
     const tokens = await this.generateTokens(user.id, user.email);
     return { user: { id: user.id, email: user.email }, ...tokens };
