@@ -1,4 +1,4 @@
-import { Controller, Post,Delete,Query, Body } from '@nestjs/common';
+import { Controller, Post,Delete,Query,Get, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 export class RegisterDto {
@@ -24,6 +24,10 @@ export class AuthController {
 @Delete('delete')
 delete(@Body('email') email: string) {
   return this.authService.delete(email);
+}
+@Get('users')
+findAll(){
+    return this.authService.findAll();
 }
 
 }

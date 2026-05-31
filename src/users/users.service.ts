@@ -24,4 +24,8 @@ async delete(email: string): Promise<DeleteResult | null> {
 
   return this.usersRepository.delete({ email });
 }
+async findAll(): Promise <User[]>{
+    return this.usersRepository.find();
+
+}
 }

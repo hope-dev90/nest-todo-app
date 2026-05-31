@@ -52,4 +52,7 @@ export class AuthService {
     if(!existing) return "user doesn't exist";
     return this.usersService.delete(email);
   }
+  async findAll(){
+    return this.usersService.findAll();
+  }
 }
