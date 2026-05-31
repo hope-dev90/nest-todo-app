@@ -47,4 +47,9 @@ export class AuthService {
 
     return { accessToken, refreshToken };
   }
+  async delete(email : string){
+    const existing = await this.usersService.findByEmail(email);
+    if(!existing) return "user doesn't exist";
+    return this.usersService.delete(email);
+  }
 }

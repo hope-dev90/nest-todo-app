@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-
+import { DeleteResult } from 'typeorm';
 @Injectable()
 export class UsersService {
   constructor(
@@ -11,7 +11,7 @@ export class UsersService {
   ) {}
 
   async findByEmail(email: string): Promise<User | null> {
-    if (!email) return null; // 👈 guard against undefined
+    if (!email) return null; 
     return this.usersRepository.findOne({ where: { email } });
   }
 
@@ -19,4 +19,9 @@ export class UsersService {
     const user = this.usersRepository.create({ email, password });
     return this.usersRepository.save(user);
   }
+async delete(email: string): Promise<DeleteResult | null> {
+  if (!email) return null;
+
+  return this.usersRepository.delete({ email });
+}
 }
