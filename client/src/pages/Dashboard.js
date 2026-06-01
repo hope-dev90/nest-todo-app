@@ -204,7 +204,12 @@ export default function Dashboard() {
                       style={{ background: note.color || 'var(--primary)' }}
                     />
                     <div>
-                      <div className="agenda-text">{note.title}</div>
+                      <div
+                        className="agenda-text"
+                        style={{ color: note.color || 'var(--text-primary)' }}
+                      >
+                        {note.title}
+                      </div>
                       <div className="agenda-sub">Note updated</div>
                     </div>
                   </div>
@@ -228,9 +233,15 @@ export default function Dashboard() {
 function NoteItem({ note, onClick }) {
   return (
     <div className="note-item" onClick={onClick}>
-      <div className="note-color-dot" style={{ background: note.color || 'var(--primary)' }} />
+      <div
+        className="note-color-dot"
+        style={{ background: note.color || 'var(--primary)' }}
+      />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div className="note-title">
+        <div
+          className="note-title"
+          style={{ color: note.color || 'var(--text-primary)' }}
+        >
           {note.isPinned && <span style={{ marginRight: 4 }}>📌</span>}
           {note.title}
         </div>
@@ -238,12 +249,26 @@ function NoteItem({ note, onClick }) {
           <img
             src={note.imageUrl}
             alt=""
-            style={{ width: '100%', maxHeight: 100, objectFit: 'cover', borderRadius: 8, marginTop: 8, marginBottom: 8 }}
+            style={{
+              width: '100%',
+              maxHeight: 100,
+              objectFit: 'cover',
+              borderRadius: 8,
+              marginTop: 8,
+              marginBottom: 8,
+            }}
           />
         )}
-        <div className="note-preview">{note.content}</div>
+        <div
+          className="note-preview"
+          style={{ color: note.color || 'var(--text-secondary)' }}
+        >
+          {note.content}
+        </div>
         <div className="note-meta">
-          <span className="note-date">{format(new Date(note.updatedAt), 'MMM d, yyyy')}</span>
+          <span className="note-date">
+            {format(new Date(note.updatedAt), 'MMM d, yyyy')}
+          </span>
           {note.isPinned && <span className="pin-badge">Pinned</span>}
         </div>
       </div>

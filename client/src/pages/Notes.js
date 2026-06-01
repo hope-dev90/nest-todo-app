@@ -266,7 +266,15 @@ function NoteCard({ note, onEdit, onDelete, onPin, deleting }) {
           marginBottom: 8,
         }}
       >
-        <h4 style={{ fontSize: 14, fontWeight: 700, flex: 1, marginRight: 8 }}>
+        <h4
+          style={{
+            fontSize: 14,
+            fontWeight: 700,
+            flex: 1,
+            marginRight: 8,
+            color: note.color || 'var(--text-primary)',
+          }}
+        >
           {note.title}
         </h4>
         <div style={{ display: 'flex', gap: 4 }}>
@@ -308,7 +316,7 @@ function NoteCard({ note, onEdit, onDelete, onPin, deleting }) {
       <p
         style={{
           fontSize: 13,
-          color: 'var(--text-secondary)',
+          color: note.color || 'var(--text-secondary)',
           lineHeight: 1.6,
           display: '-webkit-box',
           WebkitLineClamp: 4,
