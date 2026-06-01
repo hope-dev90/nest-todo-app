@@ -228,10 +228,7 @@ export default function Dashboard() {
 function NoteItem({ note, onClick }) {
   return (
     <div className="note-item" onClick={onClick}>
-      <div
-        className="note-color-dot"
-        style={{ background: note.color || 'var(--primary)' }}
-      />
+      <div className="note-color-dot" style={{ background: note.color || 'var(--primary)' }} />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="note-title">
           {note.isPinned && <span style={{ marginRight: 4 }}>📌</span>}
@@ -241,21 +238,12 @@ function NoteItem({ note, onClick }) {
           <img
             src={note.imageUrl}
             alt=""
-            style={{
-              width: '100%',
-              maxHeight: 100,
-              objectFit: 'cover',
-              borderRadius: 8,
-              marginTop: 8,
-              marginBottom: 8,
-            }}
+            style={{ width: '100%', maxHeight: 100, objectFit: 'cover', borderRadius: 8, marginTop: 8, marginBottom: 8 }}
           />
         )}
         <div className="note-preview">{note.content}</div>
         <div className="note-meta">
-          <span className="note-date">
-            {format(new Date(note.updatedAt), 'MMM d, yyyy')}
-          </span>
+          <span className="note-date">{format(new Date(note.updatedAt), 'MMM d, yyyy')}</span>
           {note.isPinned && <span className="pin-badge">Pinned</span>}
         </div>
       </div>
