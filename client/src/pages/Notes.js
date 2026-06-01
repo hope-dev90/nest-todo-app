@@ -239,6 +239,7 @@ export default function Notes() {
 }
 
 function NoteCard({ note, onEdit, onDelete, onPin, deleting }) {
+  console.log('NoteCard note.color:', note.color, 'note:', note);
   return (
     <div
       className="card"

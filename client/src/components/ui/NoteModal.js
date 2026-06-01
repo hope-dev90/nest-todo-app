@@ -103,7 +103,10 @@ export default function NoteModal({ note, onSave, onClose, loading }) {
                   key={c}
                   className={`color-swatch ${form.color === c ? 'selected' : ''}`}
                   style={{ background: c }}
-                  onClick={() => setForm((p) => ({ ...p, color: c }))}
+                  onClick={() => {
+                    console.log('Color swatch clicked:', c);
+                    setForm((p) => ({ ...p, color: c }));
+                  }}
                 />
               ))}
             </div>
