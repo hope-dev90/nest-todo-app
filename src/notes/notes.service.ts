@@ -21,7 +21,7 @@ export class NotesService {
       userId: user.id,
       isPinned: createNoteDto.isPinned,
       color: createNoteDto.color || '#7C3AED',
-      imageUrl: file ? `/uploads/${file.filename}` : null,
+      imageUrl: file ? `http://localhost:3000/uploads/${file.filename}` : null,
     };
     console.log('todoData before save:', todoData);
     const todo = this.todoRepository.create(todoData);
@@ -69,15 +69,24 @@ export class NotesService {
   }
 
   async update(id: number, updateNoteDto: UpdateNoteDto, user: User, file?: Express.Multer.File): Promise<any> {
+    console.log('NotesService.update called with:', { id, updateNoteDto, user, file });
     const todo = await this.todoRepository.findOne({
       where: { id, userId: user.id },
     });
     if (!todo) throw new NotFoundException('Todo not found');
-    const updateData = { ...(updateNoteDto as any) };
-    if (updateNoteDto.content) (updateData as any).description = updateNoteDto.content;
-    if (file) updateData.imageUrl = `/uploads/${file.filename}`;
+    
+    const updateData: any = {};
+    if (updateNoteDto.title !== undefined) updateData.title = updateNoteDto.title;
+    if (updateNoteDto.content !== undefined) updateData.description = updateNoteDto.content;
+    if (updateNoteDto.color !== undefined) updateData.color = updateNoteDto.color;
+    if (updateNoteDto.isPinned !== undefined) updateData.isPinned = updateNoteDto.isPinned;
+    if (file) updateData.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+    
+    console.log('updateData:', updateData);
+    
     Object.assign(todo, updateData);
     const saved = await this.todoRepository.save(todo);
+    console.log('NotesService.update saved:', saved);
     return { ...saved, content: saved.description };
   }
 
