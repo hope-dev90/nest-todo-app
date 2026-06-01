@@ -13,7 +13,7 @@ export class NotesService {
     private todoRepository: Repository<Todo>,
   ) {}
 
-  async create(createNoteDto: CreateNoteDto, user: User, file?: Express.Multer.File): Promise<any> {
+  async create(createNoteDto: CreateNoteDto, user: User, file?: any): Promise<any> {
     console.log('NotesService.create called with:', { user, createNoteDto, file });
     const todoData: any = {
       title: createNoteDto.title,
@@ -68,7 +68,7 @@ export class NotesService {
     return { ...todo, content: todo.description };
   }
 
-  async update(id: number, updateNoteDto: UpdateNoteDto, user: User, file?: Express.Multer.File): Promise<any> {
+  async update(id: number, updateNoteDto: UpdateNoteDto, user: User, file?: any): Promise<any> {
     console.log('NotesService.update called with:', { id, updateNoteDto, user, file });
     const todo = await this.todoRepository.findOne({
       where: { id, userId: user.id },

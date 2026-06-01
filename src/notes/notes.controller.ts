@@ -29,7 +29,7 @@ export class NotesController {
   create(
     @Req() req: Request,
     @CurrentUser() user: User,
-    @UploadedFile() file?: Express.Multer.File
+    @UploadedFile() file?: any
   ): Promise<Todo> {
     console.log('NotesController.create req.body keys:', Object.keys(req.body));
     console.log('NotesController.create req.body JSON:', JSON.stringify(req.body, null, 2));
@@ -70,7 +70,7 @@ export class NotesController {
     @Param('id') id: string,
     @Req() req: Request,
     @CurrentUser() user: User,
-    @UploadedFile() file?: Express.Multer.File
+    @UploadedFile() file?: any
   ): Promise<Todo> {
     console.log('NotesController.update id:', id);
     console.log('NotesController.update req.body keys:', Object.keys(req.body));
