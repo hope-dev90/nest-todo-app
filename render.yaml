@@ -3,7 +3,19 @@ services:
     name: todo-app
     env: node
     plan: free
-    buildCommand: NODE_ENV=development npm run render:build
+    buildCommand: |
+      echo "=== STARTING BUILD ==="
+      pwd
+      ls -la
+      echo "=== INSTALLING DEPENDENCIES ==="
+      npm install --legacy-peer-deps
+      echo "=== NODE_MODULES ==="
+      ls -la node_modules
+      echo "=== RUNNING TSC ==="
+      npx tsc -p tsconfig.build.json
+      echo "=== CHECKING DIST ==="
+      ls -la dist
+      echo "=== DONE ==="
     startCommand: npm run start:prod
     envVars:
       - key: NODE_ENV
