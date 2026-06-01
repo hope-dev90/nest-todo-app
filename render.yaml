@@ -4,6 +4,7 @@ services:
     env: node
     plan: free
     buildCommand: |
+      set -e
       echo "=== STARTING BUILD ==="
       pwd
       ls -la
@@ -21,6 +22,10 @@ services:
       npm run build
       echo "=== CHECKING DIST ==="
       ls -la dist
+      if [ ! -f dist/main.js ]; then
+        echo "ERROR: dist/main.js not found!"
+        exit 1
+      fi
       echo "=== DONE ==="
     startCommand: node dist/main.js
     envVars:
