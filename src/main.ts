@@ -5,7 +5,7 @@ import { join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { AppModule } from './app.module';
 
-async function bootstrap() {
+export async function bootstrap(): Promise<NestExpressApplication> {
   const uploadsDir = join(process.cwd(), 'uploads', 'agenda');
   if (!existsSync(uploadsDir)) mkdirSync(uploadsDir, { recursive: true });
 
@@ -30,27 +30,23 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  console.log("PORT:", process.env.PORT);
-  const port = process.env.PORT || 3000;
-
-  if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
-    await app.listen(port, '0.0.0.0');
-    console.log(`🚀 Server running on port ${port}`);
-  }
-
   return app;
 }
 
 let appPromise: Promise<NestExpressApplication>;
 
-export async function getApp() {
+export async function getApp(): Promise<NestExpressApplication> {
   if (!appPromise) {
     appPromise = bootstrap();
   }
   return appPromise;
 }
 
-// Run bootstrap when not in Vercel serverless environment
 if (process.env.VERCEL !== '1') {
-  bootstrap();
+  (async () => {
+    const port = process.env.PORT || 3000;
+    const app = await bootstrap();
+    await app.listen(port, '0.0.0.0');
+    console.log(`🚀 Server running on port ${port}`);
+  })();
 }
