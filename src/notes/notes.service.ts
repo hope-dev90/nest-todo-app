@@ -21,7 +21,7 @@ export class NotesService {
       userId: user.id,
       isPinned: createNoteDto.isPinned,
       color: createNoteDto.color || '#7C3AED',
-      imageUrl: file ? `http://localhost:3000/uploads/${file.filename}` : null,
+      imageUrl: file ? `/uploads/${file.filename}` : null,
     };
     console.log('todoData before save:', todoData);
     const todo = this.todoRepository.create(todoData);
@@ -80,7 +80,7 @@ export class NotesService {
     if (updateNoteDto.content !== undefined) updateData.description = updateNoteDto.content;
     if (updateNoteDto.color !== undefined) updateData.color = updateNoteDto.color;
     if (updateNoteDto.isPinned !== undefined) updateData.isPinned = updateNoteDto.isPinned;
-    if (file) updateData.imageUrl = `http://localhost:3000/uploads/${file.filename}`;
+    if (file) updateData.imageUrl = `/uploads/${file.filename}`;
     
     console.log('updateData:', updateData);
     

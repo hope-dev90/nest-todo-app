@@ -36,16 +36,28 @@ imports: [
     }
   ),
   TypeOrmModule.forRootAsync({
-    useFactory: (configService: ConfigService) => ({
-      type: 'postgres',
-      host: configService.get('DB_HOST'),
-      port: configService.get('DB_PORT'),
-      username: configService.get('DB_USER'),
-      password: configService.get('DB_PASSWORD'),
-      database: configService.get('DB_NAME'),
-      autoLoadEntities: true,
-      synchronize: true, 
-    }),
+    useFactory: (configService: ConfigService) => {
+      const databaseUrl = configService.get('DATABASE_URL');
+      if (databaseUrl) {
+        return {
+          type: 'postgres',
+          url: databaseUrl,
+          autoLoadEntities: true,
+          synchronize: true,
+          ssl: { rejectUnauthorized: false },
+        };
+      }
+      return {
+        type: 'postgres',
+        host: configService.get('DB_HOST'),
+        port: configService.get('DB_PORT'),
+        username: configService.get('DB_USER'),
+        password: configService.get('DB_PASSWORD'),
+        database: configService.get('DB_NAME'),
+        autoLoadEntities: true,
+        synchronize: true,
+      };
+    },
     inject: [ConfigService],
   }),
   AuthModule, UsersModule, MailModule, NotesModule, RemindersModule, AgendaModule],

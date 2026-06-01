@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: todo-app
+    env: node
+    plan: free
+    buildCommand: npm install && npm run client:install && npm run client:build && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: todo-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MAIL_HOST
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USER
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+
+databases:
+  - name: todo-db
+    databaseName: todo_db
+    user: todo_user
+    plan: free

@@ -7,7 +7,7 @@ let tokenRef = { current: null };
 let logoutRef = { current: () => {} };
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3000/api',
+  baseURL: process.env.REACT_APP_API_URL || '/api',
 });
 
 // Attach JWT token to every request
