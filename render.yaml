@@ -7,10 +7,16 @@ services:
       echo "=== STARTING BUILD ==="
       pwd
       ls -la
-      echo "=== INSTALLING DEPENDENCIES ==="
+      echo "=== INSTALLING ROOT DEPENDENCIES ==="
       npm install --legacy-peer-deps
       echo "=== NODE_MODULES ==="
       ls -la node_modules
+      echo "=== INSTALLING CLIENT DEPENDENCIES ==="
+      cd client && npm install --legacy-peer-deps && cd ..
+      echo "=== BUILDING CLIENT ==="
+      cd client && npm run build && cd ..
+      echo "=== CHECKING CLIENT BUILD ==="
+      ls -la client/build
       echo "=== RUNNING TSC ==="
       npx tsc -p tsconfig.build.json
       echo "=== CHECKING DIST ==="
