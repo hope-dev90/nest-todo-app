@@ -19,8 +19,14 @@ export default function Notes() {
     setLoading(true);
     try {
       const { data } = await notesApi.getAll(q);
+      console.log('Notes.js fetchNotes data:', data);
+      console.log(
+        'Notes.js fetchNotes data with notes:',
+        data.map((n) => ({ id: n.id, color: n.color, imageUrl: n.imageUrl })),
+      );
       setNotes(Array.isArray(data) ? data : []);
-    } catch {
+    } catch (err) {
+      console.error('Notes.js fetchNotes error:', err);
       toast.error('Failed to load notes');
     } finally {
       setLoading(false);

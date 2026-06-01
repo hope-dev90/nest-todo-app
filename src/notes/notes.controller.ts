@@ -31,12 +31,15 @@ export class NotesController {
     @CurrentUser() user: User,
     @UploadedFile() file?: Express.Multer.File
   ): Promise<Todo> {
-    console.log('NotesController.create - req.body:', req.body);
-    console.log('NotesController.create - file:', file);
+    console.log('NotesController.create req.body keys:', Object.keys(req.body));
+    console.log('NotesController.create req.body JSON:', JSON.stringify(req.body, null, 2));
+    console.log('NotesController.create req.body.color:', req.body.color);
+    console.log('NotesController.create req.body.isPinned:', req.body.isPinned);
+    console.log('NotesController.create file:', file);
     const createNoteDto: CreateNoteDto = {
       title: req.body.title,
       content: req.body.content,
-      color: req.body.color,
+      color: req.body.color || '#7C3AED',
       isPinned: req.body.isPinned === 'true',
     };
     return this.notesService.create(createNoteDto, user, file);
@@ -69,13 +72,16 @@ export class NotesController {
     @CurrentUser() user: User,
     @UploadedFile() file?: Express.Multer.File
   ): Promise<Todo> {
-    console.log('NotesController.update - req.body:', req.body);
-    console.log('NotesController.update - file:', file);
+    console.log('NotesController.update id:', id);
+    console.log('NotesController.update req.body keys:', Object.keys(req.body));
+    console.log('NotesController.update req.body JSON:', JSON.stringify(req.body, null, 2));
+    console.log('NotesController.update req.body.color:', req.body.color);
+    console.log('NotesController.update file:', file);
     const updateNoteDto: UpdateNoteDto = {
       title: req.body.title,
       content: req.body.content,
       color: req.body.color,
-      isPinned: req.body.isPinned ? req.body.isPinned === 'true' : undefined,
+      isPinned: req.body.isPinned !== undefined ? req.body.isPinned === 'true' : undefined,
     };
     return this.notesService.update(+id, updateNoteDto, user, file);
   }
