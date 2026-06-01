@@ -32,7 +32,25 @@ async function bootstrap() {
 
   console.log("PORT:", process.env.PORT);
   const port = process.env.PORT || 3000;
-  await app.listen(port, '0.0.0.0');
-  console.log(`🚀 Server running on port ${port}`);
+
+  if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+    await app.listen(port, '0.0.0.0');
+    console.log(`🚀 Server running on port ${port}`);
+  }
+
+  return app;
 }
-bootstrap();
+
+let appPromise: Promise<NestExpressApplication>;
+
+export async function getApp() {
+  if (!appPromise) {
+    appPromise = bootstrap();
+  }
+  return appPromise;
+}
+
+// Run bootstrap when not in Vercel serverless environment
+if (process.env.VERCEL !== '1') {
+  bootstrap();
+}
