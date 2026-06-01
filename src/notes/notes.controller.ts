@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Req } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
 import { Todo } from '../users/note.entity';
+import { Request } from 'express';
 
 @Controller('notes')
 @UseGuards(JwtAuthGuard)
@@ -26,18 +27,18 @@ export class NotesController {
     })
   }))
   create(
-    @Body() createNoteDto: CreateNoteDto, 
+    @Req() req: Request,
     @CurrentUser() user: User,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }), // 10MB max
-          new FileTypeValidator({ fileType: '.(jpg|jpeg|png|gif|webp)' }),
-        ],
-        fileIsRequired: false // Image is optional
-      })
-    ) file?: Express.Multer.File
+    @UploadedFile() file?: Express.Multer.File
   ): Promise<Todo> {
+    console.log('NotesController.create - req.body:', req.body);
+    console.log('NotesController.create - file:', file);
+    const createNoteDto: CreateNoteDto = {
+      title: req.body.title,
+      content: req.body.content,
+      color: req.body.color,
+      isPinned: req.body.isPinned === 'true',
+    };
     return this.notesService.create(createNoteDto, user, file);
   }
 
@@ -63,19 +64,19 @@ export class NotesController {
     })
   }))
   update(
-    @Param('id') id: string, 
-    @Body() updateNoteDto: UpdateNoteDto, 
+    @Param('id') id: string,
+    @Req() req: Request,
     @CurrentUser() user: User,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }), // 10MB max
-          new FileTypeValidator({ fileType: '.(jpg|jpeg|png|gif|webp)' }),
-        ],
-        fileIsRequired: false
-      })
-    ) file?: Express.Multer.File
+    @UploadedFile() file?: Express.Multer.File
   ): Promise<Todo> {
+    console.log('NotesController.update - req.body:', req.body);
+    console.log('NotesController.update - file:', file);
+    const updateNoteDto: UpdateNoteDto = {
+      title: req.body.title,
+      content: req.body.content,
+      color: req.body.color,
+      isPinned: req.body.isPinned ? req.body.isPinned === 'true' : undefined,
+    };
     return this.notesService.update(+id, updateNoteDto, user, file);
   }
 

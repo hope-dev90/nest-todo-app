@@ -30,7 +30,7 @@ delete(@Body('email') email: string) {
   return this.authService.delete(email);
 }
 @Get('users')
-  @UseGuards(JwtAuthGuard, RolesGuard) // 1st verify JWT, 2nd check role
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
 findAll(){
     return this.authService.findAll();

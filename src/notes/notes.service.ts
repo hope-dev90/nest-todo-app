@@ -15,12 +15,16 @@ export class NotesService {
 
   async create(createNoteDto: CreateNoteDto, user: User, file?: Express.Multer.File): Promise<any> {
     console.log('NotesService.create called with:', { user, createNoteDto, file });
-    const todo = this.todoRepository.create({
-      ...(createNoteDto as any),
+    const todoData: any = {
+      title: createNoteDto.title,
       description: createNoteDto.content || (createNoteDto as any).description,
       userId: user.id,
+      isPinned: createNoteDto.isPinned,
+      color: createNoteDto.color || '#7C3AED',
       imageUrl: file ? `/uploads/${file.filename}` : null,
-    });
+    };
+    console.log('todoData before save:', todoData);
+    const todo = this.todoRepository.create(todoData);
     const savedTodo = await this.todoRepository.save(todo) as unknown as Todo;
     console.log('NotesService.create saved:', savedTodo);
     return { ...savedTodo, content: savedTodo.description };
