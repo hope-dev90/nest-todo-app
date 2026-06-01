@@ -22,7 +22,7 @@
     "client:install": "cd client && npm install --legacy-peer-deps",
     "client:build": "cd client && npm run build",
     "client:start": "cd client && npm start",
-    "render:build": "npm install --legacy-peer-deps && npm run client:install --legacy-peer-deps && npm run client:build && npm run build"
+    "render:build": "npm install --legacy-peer-deps && npm run client:install --legacy-peer-deps && npm run client:build && npm run build && ls -la && ls -la dist"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.3.6",
@@ -64,6 +64,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
+    "@types/multer": "^2.1.0",
     "@types/node": "^24.0.0",
     "@types/nodemailer": "^8.0.0",
     "@types/passport-jwt": "^4.0.1",
@@ -105,7 +106,6 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
-
   "browserslist": {
     "production": [
       ">0.2%",
