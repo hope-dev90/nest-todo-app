@@ -20,7 +20,13 @@ export class UsersService {
   }
 
   async create(email: string, password: string, verificationToken?: string, name?: string): Promise<User> {
-    const user = this.usersRepository.create({ email, password, verificationToken, name });
+    const user = this.usersRepository.create({ 
+      email, 
+      password, 
+      verificationToken, 
+      name, 
+      isVerified: true 
+    });
     return this.usersRepository.save(user);
   }
   async findByVerificationToken(token: string): Promise<User | null> {

@@ -45,8 +45,6 @@ export class AuthService {
     const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) throw new UnauthorizedException('Invalid credentials');
 
-    if (!user.isVerified) throw new UnauthorizedException('Please verify your email first');
-
     const tokens = await this.generateTokens(user.id, user.email);
     return { user: { id: user.id, email: user.email, name: user.name }, ...tokens };
   }
