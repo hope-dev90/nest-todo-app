@@ -3,7 +3,7 @@ services:
     name: todo-app
     env: node
     plan: free
-    buildCommand: npm install && npm run client:install && npm run client:build && npm run build
+    buildCommand: NODE_ENV=development npm run render:build
     startCommand: npm run start:prod
     envVars:
       - key: NODE_ENV
@@ -17,7 +17,7 @@ services:
       - key: MAIL_HOST
         value: smtp.gmail.com
       - key: MAIL_PORT
-        value: "587"
+        value: '587'
       - key: MAIL_USER
         sync: false
       - key: MAIL_PASSWORD

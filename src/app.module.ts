@@ -54,7 +54,7 @@ imports: [
   AgendaModule,
   ServeStaticModule.forRoot(
     {
-      rootPath: join(__dirname, '..', 'client', 'build'),
+      rootPath: join(process.cwd(), 'client', 'build'),
       serveRoot: '/',
       exclude: ['/auth', '/notes', '/uploads', '/api'],
       serveStaticOptions: {
@@ -62,7 +62,7 @@ imports: [
       },
     },
     {
-      rootPath: join(__dirname, '..', 'uploads'),
+      rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
     }
   ),
