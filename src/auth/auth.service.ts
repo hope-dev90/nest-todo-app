@@ -55,12 +55,12 @@ export class AuthService {
     const payload = { sub: userId, email };
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_ACCESS_SECRET'), 
+      secret: this.configService.get('JWT_SECRET'), 
       expiresIn: '15m',
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_REFRESH_SECRET'), 
+      secret: this.configService.get('JWT_SECRET'), 
       expiresIn: '7d',
     });
 
