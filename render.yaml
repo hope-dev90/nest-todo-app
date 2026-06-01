@@ -17,8 +17,8 @@ services:
       cd client && npm run build && cd ..
       echo "=== CHECKING CLIENT BUILD ==="
       ls -la client/build
-      echo "=== RUNNING TSC ==="
-      npx tsc -p tsconfig.build.json
+      echo "=== RUNNING BUILD ==="
+      npm run build
       echo "=== CHECKING DIST ==="
       ls -la dist
       echo "=== DONE ==="
