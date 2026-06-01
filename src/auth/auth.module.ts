@@ -7,7 +7,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from '../common/strategies/jwt.strategy';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Reflector } from '@nestjs/core';
-import { MailModule } from 'src/mail/mail.module'; 
+import { MailModule } from '../mail/mail.module'; 
 @Module({
   imports: [
     UsersModule,

@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '../mail/mail.service';
 @Injectable()
 export class AuthService {
   constructor(

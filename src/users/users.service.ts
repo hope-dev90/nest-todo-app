@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { DeleteResult, UpdateResult } from 'typeorm';
-import { MailService } from 'src/mail/mail.service';
+import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
