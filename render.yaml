@@ -3,30 +3,7 @@ services:
     name: todo-app
     env: node
     plan: free
-    buildCommand: |
-      set -e
-      echo "=== STARTING BUILD ==="
-      pwd
-      ls -la
-      echo "=== INSTALLING ROOT DEPENDENCIES ==="
-      npm install --legacy-peer-deps
-      echo "=== NODE_MODULES ==="
-      ls -la node_modules
-      echo "=== INSTALLING CLIENT DEPENDENCIES ==="
-      cd client && npm install --legacy-peer-deps && cd ..
-      echo "=== BUILDING CLIENT ==="
-      cd client && npm run build && cd ..
-      echo "=== CHECKING CLIENT BUILD ==="
-      ls -la client/build
-      echo "=== RUNNING BUILD ==="
-      npm run build
-      echo "=== CHECKING DIST ==="
-      ls -la dist
-      if [ ! -f dist/main.js ]; then
-        echo "ERROR: dist/main.js not found!"
-        exit 1
-      fi
-      echo "=== DONE ==="
+    buildCommand: npm install --legacy-peer-deps && npm run client:install --legacy-peer-deps && npm run client:build && npm run build
     startCommand: node dist/main.js
     envVars:
       - key: NODE_ENV
