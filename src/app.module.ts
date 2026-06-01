@@ -56,7 +56,6 @@ imports: [
     {
       rootPath: join(process.cwd(), 'client', 'build'),
       serveRoot: '/',
-      exclude: ['/auth', '/notes', '/uploads', '/api'],
       serveStaticOptions: {
         fallthrough: true,
       },
