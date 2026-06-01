@@ -23,10 +23,11 @@
     "client:install": "cd client && npm install --legacy-peer-deps",
     "client:build": "cd client && npm run build",
     "client:start": "cd client && npm start",
-    "render:build": "pwd && ls -la && npm install --legacy-peer-deps && ls -la node_modules && npm run client:install --legacy-peer-deps && ls -la client && npm run client:build && ls -la client && npm run build && ls -la && ls -la dist"
+    "render:build": "pwd && ls -la && npm install --legacy-peer-deps --include=dev && ls -la node_modules && npm run client:install --legacy-peer-deps && ls -la client && npm run client:build && ls -la client && npm run build && ls -la && ls -la dist"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.3.6",
+    "@nestjs/cli": "^11.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
@@ -59,7 +60,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
-    "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@types/bcryptjs": "^2.4.6",
