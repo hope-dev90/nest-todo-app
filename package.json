@@ -22,7 +22,7 @@
     "client:install": "cd client && npm install --legacy-peer-deps",
     "client:build": "cd client && npm run build",
     "client:start": "cd client && npm start",
-    "render:build": "npm install --legacy-peer-deps && npm run client:install --legacy-peer-deps && npm run client:build && npm run build && ls -la && ls -la dist"
+    "render:build": "pwd && ls -la && npm install --legacy-peer-deps && npm run client:install --legacy-peer-deps && npm run client:build && npm run build && ls -la && ls -la dist"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.3.6",
