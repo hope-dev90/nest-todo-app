@@ -48,7 +48,7 @@ export class NotesService {
       });
     }
     console.log('NotesService.findAll found:', todos.length, 'todos');
-    console.log('Todos:', todos);
+    console.log('Todos with details:', todos.map(todo => ({ id: todo.id, title: todo.title, color: todo.color, imageUrl: todo.imageUrl })));
     // Explicitly set content for frontend compatibility
     return todos.map(todo => ({
       ...todo,
