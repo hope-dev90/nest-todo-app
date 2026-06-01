@@ -16,25 +16,11 @@ import { AgendaModule } from './agenda/agenda.module';
 @Module({
 
 imports: [
-   NotesModule,
-  RemindersModule,
-  AgendaModule,
   ConfigModule.forRoot({ isGlobal: true }),
   ThrottlerModule.forRoot([{
     ttl: 60000, 
     limit: 1000, 
   }]),
-  ServeStaticModule.forRoot(
-    {
-      rootPath: join(__dirname, '..', 'client', 'build'),
-      serveRoot: '/',
-      exclude: ['/auth', '/notes', '/uploads'],
-    },
-    {
-      rootPath: join(__dirname, '..', 'uploads'),
-      serveRoot: '/uploads',
-    }
-  ),
   TypeOrmModule.forRootAsync({
     useFactory: (configService: ConfigService) => {
       const databaseUrl = configService.get('DATABASE_URL');
@@ -60,7 +46,27 @@ imports: [
     },
     inject: [ConfigService],
   }),
-  AuthModule, UsersModule, MailModule, NotesModule, RemindersModule, AgendaModule],
+  AuthModule,
+  UsersModule,
+  MailModule,
+  NotesModule,
+  RemindersModule,
+  AgendaModule,
+  ServeStaticModule.forRoot(
+    {
+      rootPath: join(__dirname, '..', 'client', 'build'),
+      serveRoot: '/',
+      exclude: ['/auth', '/notes', '/uploads', '/api'],
+      serveStaticOptions: {
+        fallthrough: true,
+      },
+    },
+    {
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }
+  ),
+],
 
   controllers: [AppController],
   providers: [
