@@ -4,8 +4,15 @@ import { authApi } from '../services/api';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null); // No localStorage initialization
-  const [token, setToken] = useState(null); // Store token in memory only
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -14,8 +21,10 @@ export function AuthProvider({ children }) {
     setError('');
     try {
       const { data } = await authApi.login(email, password);
-      setToken(data.accessToken); // Store token in memory only
       const userData = data.user || { email };
+      localStorage.setItem('token', data.accessToken);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setToken(data.accessToken);
       setUser(userData);
       return true;
     } catch (e) {
@@ -31,7 +40,6 @@ export function AuthProvider({ children }) {
     setError('');
     try {
       const { data } = await authApi.register(name, email, password);
-      // Note: register endpoint doesn't return token yet (returns verification message)
       const userData = { name, email };
       setUser(userData);
       return true;
@@ -44,6 +52,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const logout = useCallback(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
     setToken(null);
   }, []);
