@@ -32,6 +32,7 @@ async function bootstrap() {
     origin: [
       process.env.FRONTEND_URL || 'http://localhost:3001',
       'http://localhost:3000',
+      /\.vercel\.app$/,
     ],
     credentials: true,
   });
