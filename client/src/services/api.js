@@ -7,7 +7,7 @@ let tokenRef = { current: null };
 let logoutRef = { current: () => {} };
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://nest-todo-app-o2uf.onrender.com/api',
+  baseURL: process.env.REACT_APP_API_URL || '/api',
 });
 
 // Attach JWT token to every request

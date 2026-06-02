@@ -9,14 +9,16 @@ async function bootstrap() {
   console.log("=== Starting NestJS App ===");
   console.log("NODE_ENV:", process.env.NODE_ENV);
   console.log("PORT:", process.env.PORT);
+  console.log("CWD:", process.cwd());
 
   const uploadsDir = join(process.cwd(), 'uploads', 'agenda');
   if (!existsSync(uploadsDir)) mkdirSync(uploadsDir, { recursive: true });
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // Serve uploaded files
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
-    prefix: '/api/uploads/',
+    prefix: '/uploads/',
   });
 
   app.useGlobalPipes(
@@ -28,23 +30,26 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: (origin, callback) => {
-      const allowed = [
-        'http://localhost:3000',
-        'http://localhost:3001',
-      ];
-      if (!origin || allowed.includes(origin) || origin.endsWith('.vercel.app')) {
-        callback(null, true);
-      } else if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
-        callback(null, true);
-      } else {
-        callback(new Error(`CORS blocked: ${origin}`));
-      }
-    },
+    origin: true,
     credentials: true,
   });
 
   app.setGlobalPrefix('api');
+
+  // Serve React static build
+  const clientBuildPath = join(process.cwd(), 'client', 'build');
+  console.log("Client build path:", clientBuildPath);
+  console.log("Client build exists:", existsSync(clientBuildPath));
+
+  if (existsSync(clientBuildPath)) {
+    app.useStaticAssets(clientBuildPath);
+
+    // SPA fallback — all non-API routes return index.html
+    const expressApp = app.getHttpAdapter().getInstance();
+    expressApp.get(/^(?!\/api).*$/, (_req: any, res: any) => {
+      res.sendFile(join(clientBuildPath, 'index.html'));
+    });
+  }
 
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');

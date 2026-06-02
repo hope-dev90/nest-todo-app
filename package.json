@@ -9,6 +9,7 @@
   "engines": { "node": ">=18" },
   "scripts": {
     "build": "nest build",
+    "build:full": "npm run client:install && npm run client:build && npm run build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",
@@ -20,7 +21,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prisma:generate": "npx prisma generate"
+    "prisma:generate": "npx prisma generate",
+    "client:install": "cd client && npm install --legacy-peer-deps",
+    "client:build": "cd client && npm run build"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.3.6",
