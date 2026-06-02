@@ -29,11 +29,20 @@ async function bootstrap() {
 
   // Allow requests from the Vercel frontend
   app.enableCors({
-    origin: [
-      process.env.FRONTEND_URL || 'http://localhost:3001',
-      'http://localhost:3000',
-      /\.vercel\.app$/,
-    ],
+    origin: (origin, callback) => {
+      const allowed = [
+        'http://localhost:3000',
+        'http://localhost:3001',
+      ];
+      // Allow any vercel.app subdomain or if no origin (e.g. mobile/curl)
+      if (!origin || allowed.includes(origin) || origin.endsWith('.vercel.app')) {
+        callback(null, true);
+      } else if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS blocked: ${origin}`));
+      }
+    },
     credentials: true,
   });
 
