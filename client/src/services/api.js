@@ -74,13 +74,10 @@ export const notesApi = {
   getAll: (search) => api.get('/notes', { params: { search } }),
   getById: (id) => api.get(`/notes/${id}`),
   create: (note, file) => {
-    console.log('notesApi.create called with note:', note, 'file:', file);
     const formData = new FormData();
     formData.append('title', note.title);
     formData.append('content', note.content);
-    console.log('Appending color:', note.color);
     formData.append('color', note.color);
-    console.log('Appending isPinned:', note.isPinned);
     formData.append('isPinned', note.isPinned);
     if (file) formData.append('image', file);
     return api.post('/notes', formData, {
@@ -88,21 +85,11 @@ export const notesApi = {
     });
   },
   update: (id, note, file) => {
-    console.log(
-      'notesApi.update called with id:',
-      id,
-      'note:',
-      note,
-      'file:',
-      file,
-    );
     const formData = new FormData();
-    if (note.title) formData.append('title', note.title);
-    if (note.content) formData.append('content', note.content);
-    console.log('Appending color:', note.color);
-    formData.append('color', note.color);
-    console.log('Appending isPinned:', note.isPinned);
-    formData.append('isPinned', note.isPinned);
+    if (note.title !== undefined) formData.append('title', note.title);
+    if (note.content !== undefined) formData.append('content', note.content);
+    if (note.color !== undefined) formData.append('color', note.color);
+    if (note.isPinned !== undefined) formData.append('isPinned', note.isPinned);
     if (file) formData.append('image', file);
     return api.patch(`/notes/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },

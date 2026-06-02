@@ -19,15 +19,14 @@ export default function Notes() {
     setLoading(true);
     try {
       const { data } = await notesApi.getAll(q);
-      const notes = Array.isArray(data) ? data : [];
-      setNotes(notes);
+      setNotes(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Notes.js fetchNotes error:', err);
       toast.error('Failed to load notes');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     fetchNotes();
@@ -60,7 +59,7 @@ export default function Notes() {
         toast.success('Note created!');
       }
       setModalOpen(false);
-      fetchNotes(search || undefined);
+      await fetchNotes(search || undefined);
     } catch {
       toast.error('Failed to save note');
     } finally {
