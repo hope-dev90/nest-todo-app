@@ -31,8 +31,7 @@ async function bootstrap() {
   app.enableCors({
     origin: (origin, callback) => {
       const allowed = [
-        'http://localhost:3000',
-        'http://localhost:3001',
+      'https://nest-todo-app-git-main-mutimutuje483s-projects.vercel.app'
       ];
       // Allow any vercel.app subdomain or if no origin (e.g. mobile/curl)
       if (!origin || allowed.includes(origin) || origin.endsWith('.vercel.app')) {
