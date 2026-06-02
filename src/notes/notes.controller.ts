@@ -47,7 +47,6 @@ export class NotesController {
 
   @Get()
   findAll(@CurrentUser() user: User, @Query('search') search?: string): Promise<Todo[]> {
-    console.log('NotesController.findAll called with user id:', user.id, 'search:', search);
     return this.notesService.findAll(user, search);
   }
 

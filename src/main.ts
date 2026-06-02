@@ -37,9 +37,14 @@ async function bootstrap() {
     }),
   );
 
+  // Disable caching for all API responses
+  app.use((req: any, res: any, next: any) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+  });
+
   app.setGlobalPrefix('api');
 
-  // Serve React static build
   const clientBuildPath = join(process.cwd(), 'client', 'build');
   console.log("Client build path:", clientBuildPath);
   console.log("Client build exists:", existsSync(clientBuildPath));
@@ -47,7 +52,7 @@ async function bootstrap() {
   if (existsSync(clientBuildPath)) {
     app.useStaticAssets(clientBuildPath);
 
-    // SPA fallback — all non-API routes return index.html
+
     const expressApp = app.getHttpAdapter().getInstance();
     expressApp.get(/^(?!\/api).*$/, (_req: any, res: any) => {
       res.sendFile(join(clientBuildPath, 'index.html'));
