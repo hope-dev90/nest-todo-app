@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { useRef, useEffect } from 'react';
+import { useEffect } from 'react';
 
-// Use refs to store current token and logout so they always get the latest value
+// Initialize from localStorage so first request has the token
 let tokenRef = { current: localStorage.getItem('token') };
 let logoutRef = { current: () => {} };
 
@@ -10,37 +10,25 @@ const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL || '/api',
 });
 
+// Expose so AuthContext can sync token immediately on login/logout
+export function setApiToken(token) {
+  tokenRef.current = token;
+}
+
 // Attach JWT token to every request
 api.interceptors.request.use(
   (config) => {
     const token = tokenRef.current;
-    console.log(
-      'API Request to:',
-      config.url,
-      'with token:',
-      token ? 'exists' : 'missing',
-    );
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
-  (err) => {
-    console.error('API Request Error:', err);
-    return Promise.reject(err);
-  },
+  (err) => Promise.reject(err),
 );
 
 // Auto logout on 401
 api.interceptors.response.use(
-  (res) => {
-    console.log('API Response:', res.config.url, res.data);
-    return res;
-  },
+  (res) => res,
   (err) => {
-    console.error(
-      'API Response Error:',
-      err.response?.status,
-      err.response?.data,
-    );
     if (err.response?.status === 401) {
       logoutRef.current();
       window.location.href = '/login';
@@ -49,11 +37,10 @@ api.interceptors.response.use(
   },
 );
 
-// Hook to initialize the API with the auth context
+// Hook to keep refs in sync with auth context
 export function useApiSetup() {
   const { token, logout } = useAuth();
 
-  // Update refs whenever token or logout changes
   useEffect(() => {
     tokenRef.current = token;
     logoutRef.current = logout;

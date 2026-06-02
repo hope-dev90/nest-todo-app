@@ -51,15 +51,16 @@ export class AuthService {
 
   async generateTokens(userId: number, email: string) {
     const payload = { sub: userId, email };
+    const secret = this.configService.get('JWT_SECRET');
 
     const accessToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_SECRET'), 
-      expiresIn: '15m',
+      secret,
+      expiresIn: '7d',
     });
 
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_SECRET'), 
-      expiresIn: '7d',
+      secret,
+      expiresIn: '30d',
     });
 
     return { accessToken, refreshToken };
