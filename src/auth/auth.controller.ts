@@ -24,7 +24,7 @@ export class AuthController {
     return this.authService.login(loginDto.email, loginDto.password);
   }
 @Delete('delete')
-  @UseGuards(JwtAuthGuard, RolesGuard) // 1st verify JWT, 2nd check role
+  @UseGuards(JwtAuthGuard, RolesGuard) 
   @Roles(Role.ADMIN)                   
 delete(@Body('email') email: string) {
   return this.authService.delete(email);

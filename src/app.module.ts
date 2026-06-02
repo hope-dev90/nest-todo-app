@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,12 +13,11 @@ import { RemindersModule } from './reminders/reminders.module';
 import { AgendaModule } from './agenda/agenda.module';
 
 @Module({
-  // IMPORTANT: API modules FIRST, ServeStatic LAST!
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     ThrottlerModule.forRoot([{
-      ttl: 60000, 
-      limit: 1000, 
+      ttl: 60000,
+      limit: 1000,
     }]),
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
@@ -53,22 +50,6 @@ import { AgendaModule } from './agenda/agenda.module';
     NotesModule,
     RemindersModule,
     AgendaModule,
-    // ServeStatic LAST so API routes are handled first!
-    ServeStaticModule.forRoot(
-      {
-        rootPath: join(process.cwd(), 'client', 'build'),
-        serveRoot: '/',
-        exclude: ['/api*'],
-        serveStaticOptions: {
-          index: false,
-          fallthrough: false,
-        },
-      },
-      {
-        rootPath: join(process.cwd(), 'uploads'),
-        serveRoot: '/uploads',
-      }
-    ),
   ],
 
   controllers: [AppController],
@@ -79,6 +60,5 @@ import { AgendaModule } from './agenda/agenda.module';
       useClass: ThrottlerGuard,
     },
   ],
-  
 })
 export class AppModule {}

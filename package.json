@@ -20,11 +20,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prisma:generate": "npx prisma generate",
-    "client:install": "cd client && npm install --legacy-peer-deps",
-    "client:build": "cd client && npm run build",
-    "client:start": "cd client && npm start",
-    "postinstall": "npm run build"
+    "prisma:generate": "npx prisma generate"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.3.6",
