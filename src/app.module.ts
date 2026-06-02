@@ -58,8 +58,10 @@ import { AgendaModule } from './agenda/agenda.module';
       {
         rootPath: join(process.cwd(), 'client', 'build'),
         serveRoot: '/',
+        exclude: ['/api*'],
         serveStaticOptions: {
-          fallthrough: true,
+          index: false,
+          fallthrough: false,
         },
       },
       {

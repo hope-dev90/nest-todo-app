@@ -32,7 +32,17 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.setGlobalPrefix('api');
+  // Exclude static/frontend routes from the API prefix
+  app.setGlobalPrefix('api', {
+    exclude: ['/'],
+  });
+
+  // SPA fallback: serve index.html for any unmatched non-API route
+  const clientBuild = join(process.cwd(), 'client', 'build');
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.get(/^(?!\/api).*$/, (_req: any, res: any) => {
+    res.sendFile(join(clientBuild, 'index.html'));
+  });
 
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
