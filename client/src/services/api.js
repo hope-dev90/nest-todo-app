@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useRef, useEffect } from 'react';
 
 // Use refs to store current token and logout so they always get the latest value
-let tokenRef = { current: null };
+let tokenRef = { current: localStorage.getItem('token') };
 let logoutRef = { current: () => {} };
 
 const api = axios.create({
