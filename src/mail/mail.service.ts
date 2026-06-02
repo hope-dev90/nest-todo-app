@@ -1,9 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailService {
-  constructor(private mailerService: MailerService) {}
+  constructor(
+    private mailerService: MailerService,
+    private configService: ConfigService,
+  ) {}
+
+  private getBaseUrl(): string {
+    return this.configService.get('APP_URL') || 'http://localhost:3000';
+  }
 
   async sendWelcome(email: string) {
     try {
@@ -21,12 +29,13 @@ export class MailService {
 
   async sendVerificationEmail(to: string, token: string) {
     try {
+      const baseUrl = this.getBaseUrl();
       console.log(`Sending verification email to ${to} with token: ${token}`);
       await this.mailerService.sendMail({
         to: to,
         subject: 'Verify your email',
-        text: `Click the link to verify your email: http://localhost:3000/auth/verify-email?token=${token}`,
-        html: `<h1>Verify your email</h1><p>Click the link below to verify your email. It expires in 24 hours.</p><a href="http://localhost:3000/auth/verify-email?token=${token}">Verify Email</a>`,
+        text: `Click the link to verify your email: ${baseUrl}/auth/verify-email?token=${token}`,
+        html: `<h1>Verify your email</h1><p>Click the link below to verify your email. It expires in 24 hours.</p><a href="${baseUrl}/auth/verify-email?token=${token}">Verify Email</a>`,
       });
     } catch (error) {
       console.error('Failed to send verification email:', error);

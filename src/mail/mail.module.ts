@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailService } from './mail.service';
 
 @Module({
@@ -8,22 +8,22 @@ import { MailService } from './mail.service';
     MailerModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         transport: {
-          host: 'smtp.gmail.com',
-          port: 587,
+          host: configService.get('MAIL_HOST') || 'smtp.gmail.com',
+          port: parseInt(configService.get('MAIL_PORT') || '587'),
           secure: false,
           auth: {
-            user: configService.get('EMAIL_USER'),
-            pass: configService.get('EMAIL_PASS'),
+            user: configService.get('MAIL_USER'),
+            pass: configService.get('MAIL_PASSWORD'),
           },
         },
         defaults: {
-          from: '"No Reply" <' + configService.get('EMAIL_USER') + '>',
+          from: configService.get('MAIL_FROM') || configService.get('MAIL_USER'),
         },
       }),
       inject: [ConfigService],
     }),
   ],
   providers: [MailService],
-  exports: [MailService], // 👈 so AuthModule can use it
+  exports: [MailService],
 })
 export class MailModule {}
