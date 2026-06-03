@@ -11,6 +11,14 @@ const COLORS = [
   '#F97316',
 ];
 
+const API_BASE = (process.env.REACT_APP_API_URL || 'http://localhost:3000/api').replace(/\/api$/, '');
+
+function getImageUrl(imageUrl) {
+  if (!imageUrl) return null;
+  if (imageUrl.startsWith('http') || imageUrl.startsWith('blob') || imageUrl.startsWith('data')) return imageUrl;
+  return `${API_BASE}${imageUrl}`;
+}
+
 export default function NoteModal({ note, onSave, onClose, loading }) {
   const [form, setForm] = useState({
     title: '',
@@ -30,7 +38,7 @@ export default function NoteModal({ note, onSave, onClose, loading }) {
         color: note.color || COLORS[0],
         isPinned: note.isPinned || false,
       });
-      if (note.imageUrl) setImagePreview(note.imageUrl);
+      if (note.imageUrl) setImagePreview(getImageUrl(note.imageUrl));
     }
   }, [note]);
 

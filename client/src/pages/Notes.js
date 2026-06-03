@@ -5,6 +5,14 @@ import { notesApi } from '../services/api';
 import { useToast } from '../context/ToastContext';
 import { format } from 'date-fns';
 
+const API_BASE = (process.env.REACT_APP_API_URL || 'http://localhost:3000/api').replace(/\/api$/, '');
+
+function getImageUrl(imageUrl) {
+  if (!imageUrl) return null;
+  if (imageUrl.startsWith('http')) return imageUrl;
+  return `${API_BASE}${imageUrl}`;
+}
+
 export default function Notes() {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -296,7 +304,7 @@ function NoteCard({ note, onEdit, onDelete, onPin, deleting }) {
 
       {note.imageUrl && (
         <img
-          src={note.imageUrl}
+          src={getImageUrl(note.imageUrl)}
           alt=""
           style={{
             width: '100%',
