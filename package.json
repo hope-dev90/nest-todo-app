@@ -6,7 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "main": "dist/main.js",
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "build": "nest build",
     "build:full": "npm run client:install && npm run client:build && npm run build",
@@ -58,6 +60,8 @@
     "uuid": "^14.0.0"
   },
   "devDependencies": {
+    "@angular-devkit/core": "^21.2.13",
+    "@angular-devkit/schematics": "^21.2.13",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
     "@nestjs/schematics": "^11.0.0",
